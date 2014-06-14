@@ -5,15 +5,24 @@
 </head>
 <body>
 <div class="photo-upload">
-<form action="index.html" method="POST"  enctype="multipart/form-data">
-	<input type="file" name="photo" value="browse" id="photo"/>
-	<input type="submit" name="send" value="Upload" id="post" />
-
-</form>
-</div>		
+	<form action="index.php" method="POST"  enctype="multipart/form-data">
+		<input type="file" name="photo" value="browse" id="photo"/>
+		<input type="submit" name="send" value="Upload" id="post" />
+	</form>
+</div>
 <?php 
 	include 'upload.class.php';
-	$upload->photoUpload();
+	$tmpname = $_FILES['photo']['tmp_name'];
+	$size    = 300;
+	$dir =   'uploads/';
+	$newdir= 'resized/';
+	$img = $upload->photoUpload();
+	$max_w = 150;
+	$max_h = 150;
+	$th_w = 100;
+	$th_h = 100;
+	//$upload->resizeImage($upload->photoUpload());
+	$upload->resizejpeg($dir, $newdir, $img, $max_w, $max_h, $th_w, $th_h);
 ?>
 </body>
 </html>
