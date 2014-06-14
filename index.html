@@ -1,0 +1,18 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+</head>
+<body>
+<div class="photo-upload">
+	<form action="index.html" method="POST"  enctype="multipart/form-data">
+		<input type="file" name="photo" value="browse" id="photo"/>
+	</form>
+		<input type="submit" name="send" value="Upload" id="post" />
+</div>
+<?php 
+	include 'upload.class.php';
+	$upload->photoUpload();
+?>
+</body>
+</html>
