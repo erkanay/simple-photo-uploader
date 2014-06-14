@@ -13,7 +13,7 @@
 class Uploader{
 	public function photoUpload(){
 		$path = 'uploads/';
-		$file_ext   = array('jpg','png','gif','bmp');
+		$file_ext   = array('jpg','png','gif','bmp','JPG');
 		$post_ext   = end(explode('.',$_FILES['photo']['name']));
 		$photo_name = $_FILES['photo']['name'];
 		$photo_type = $_FILES['photo']['type'];
@@ -36,44 +36,11 @@ class Uploader{
 				//new photo name and encryption
 				$new_name = explode('.',$photo_name);
 				$photo_name = 'erkan_'.md5($new_name[0]).'.'.$new_name[1];
-			       /**
-				* Image Proccessing : resize to image STARTS
-				**/
-				// The file
-				//$photo_name = 'test.jpg';
-
-				// Set a maximum height and width
-				$width = 200;
-				$height = 200;
-
-				// Content type
-				header('Content-Type: image/jpeg');
-
-				// Get new dimensions
-				list($width_orig, $height_orig) = getimagesize($photo_name);
-
-				$ratio_orig = $width_orig/$height_orig;
-
-				if ($width/$height > $ratio_orig) {
-				   $width = $height*$ratio_orig;
-				} else {
-				   $height = $width/$ratio_orig;
-				}
-
-				// Resample
-				$image_p = imagecreatetruecolor($width, $height);
-				$image = imagecreatefromjpeg($file_name);
-				imagecopyresampled($image_p, $image, 0, 0, 0, 0, $width, $height, $width_orig, $height_orig);
-
-				// Output
-				imagejpeg($image_p, null, 100);
-			       /**
-				* Image Proccessing : resize to image ENDS
-				**/
-				//
+			    
 				//move to directory
 				if(move_uploaded_file($photo_tmp,$path.$photo_name)){
-					echo "<img src='uploads/$photo_name' />";
+					 
+					return $photo_name;
 				}
 			}
 		}
@@ -81,6 +48,71 @@ class Uploader{
 			echo 'The uploaded file has invalid rules';
 		}
 	}
+	 
+	public function resizejpeg($dir, $newdir, $img, $max_w, $max_h, $th_w, $th_h){
+	    // set destination directory
+	    if (!$newdir) $newdir = $dir;
+	
+	    // get original images width and height
+	    list($or_w, $or_h, $or_t) = getimagesize($dir.$img);
+	
+	    // make sure image is a jpeg
+	    if ($or_t == 2) {
+	    
+	        // obtain the image's ratio
+	        $ratio = ($or_h / $or_w);
+	
+	        // original image
+	        $or_image = imagecreatefromjpeg($dir.$img);
+	
+	        // resize image?
+	        if ($or_w > $max_w || $or_h > $max_h) {
+	
+	            // resize by height, then width (height dominant)
+	            if ($max_h < $max_w) {
+	                $rs_h = $max_h;
+	                $rs_w = $rs_h / $ratio;
+	            }
+	            // resize by width, then height (width dominant)
+	            else {
+	                $rs_w = $max_w;
+	                $rs_h = $ratio * $rs_w;
+	            }
+	
+	            // copy old image to new image
+	            $rs_image = imagecreatetruecolor($rs_w, $rs_h);
+	            imagecopyresampled($rs_image, $or_image, 0, 0, 0, 0, $rs_w, $rs_h, $or_w, $or_h);
+	        }
+	        // image requires no resizing
+	        else {
+	            $rs_w = $or_w;
+	            $rs_h = $or_h;
+	
+	            $rs_image = $or_image;
+	        }
+	
+	        // generate resized image
+	        imagejpeg($rs_image, $newdir.$img, 100);
+	
+	        $th_image = imagecreatetruecolor($th_w, $th_h);
+	
+	        // cut out a rectangle from the resized image and store in thumbnail
+	        $new_w = (($rs_w / 2) - ($th_w / 2));
+	        $new_h = (($rs_h / 2) - ($th_h / 2));
+	
+	        imagecopyresized($th_image, $rs_image, 0, 0, $new_w, $new_h, $rs_w, $rs_h, $rs_w, $rs_h);
+	
+	        // generate thumbnail
+	        imagejpeg($th_image, $newdir.'thumb_'.$img, 100);
+	
+	        return true;
+	    } 
+	
+	    // Image type was not jpeg!
+	    else {
+	        return false;
+	    }
+     }
 }	
 $upload = new Uploader();
 ?>
