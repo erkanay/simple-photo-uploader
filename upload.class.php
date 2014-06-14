@@ -1,4 +1,15 @@
 <?php
+/** 
+ * +------------------------------------------------------------------------+ 
+ * | common.class.php                                                       | 
+ * +------------------------------------------------------------------------+ 
+ * | @author : Erkan AY				                            | 
+ * |------------------------------------------------------------------------+  						                                                 
+ * | Email         info@erkanay.com                                         | 
+ * | Web           http://erkanay.com                                       |            
+ * +------------------------------------------------------------------------+
+ *
+ */ 
 class Uploader{
 	public function photoUpload(){
 		$path = 'uploads/';
@@ -9,7 +20,7 @@ class Uploader{
 		$photo_size = $_FILES['photo']['size'];
 		$photo_tmp  = $_FILES['photo']['tmp_name'];
 		$photo_error= $_FILES['photo']['error'];
-		//move_uploaded_file($photo_tmp,"uploads/".$photo_name);
+		//control of extensions and size
 		if((($photo_type == 'image/jpeg') || ($photo_type == 'image/gif')   ||
 		   ($photo_type == 'image/png') || ($photo_type == 'image/pjpeg')) &&
 		   ($photo_size < 2000000) && in_array($post_ext,$file_ext)){
