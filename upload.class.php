@@ -20,7 +20,7 @@ class Uploader{
 		$photo_size = $_FILES['photo']['size'];
 		$photo_tmp  = $_FILES['photo']['tmp_name'];
 		$photo_error= $_FILES['photo']['error'];
-		//control of extensions and size
+		//move_uploaded_file($photo_tmp,"uploads/".$photo_name);
 		if((($photo_type == 'image/jpeg') || ($photo_type == 'image/gif')   ||
 		   ($photo_type == 'image/png') || ($photo_type == 'image/pjpeg')) &&
 		   ($photo_size < 2000000) && in_array($post_ext,$file_ext)){
@@ -36,8 +36,44 @@ class Uploader{
 				//new photo name and encryption
 				$new_name = explode('.',$photo_name);
 				$photo_name = 'erkan_'.md5($new_name[0]).'.'.$new_name[1];
+			       /**
+				* Image Proccessing : resize to image STARTS
+				**/
+				// The file
+				//$photo_name = 'test.jpg';
+
+				// Set a maximum height and width
+				$width = 200;
+				$height = 200;
+
+				// Content type
+				header('Content-Type: image/jpeg');
+
+				// Get new dimensions
+				list($width_orig, $height_orig) = getimagesize($photo_name);
+
+				$ratio_orig = $width_orig/$height_orig;
+
+				if ($width/$height > $ratio_orig) {
+				   $width = $height*$ratio_orig;
+				} else {
+				   $height = $width/$ratio_orig;
+				}
+
+				// Resample
+				$image_p = imagecreatetruecolor($width, $height);
+				$image = imagecreatefromjpeg($file_name);
+				imagecopyresampled($image_p, $image, 0, 0, 0, 0, $width, $height, $width_orig, $height_orig);
+
+				// Output
+				imagejpeg($image_p, null, 100);
+			       /**
+				* Image Proccessing : resize to image ENDS
+				**/
+				//
+				//move to directory
 				if(move_uploaded_file($photo_tmp,$path.$photo_name)){
-					echo "<img src=$path.$photo_name />";
+					echo "<img src='uploads/$photo_name' />";
 				}
 			}
 		}
