@@ -23,6 +23,10 @@
 	$th_h = 100;
 	//$upload->resizeImage($upload->photoUpload());
 	$upload->resizejpeg($dir, $newdir, $img, $max_w, $max_h, $th_w, $th_h);
+	echo '<br />';
+	echo '<div class="thumb">';
+		echo $upload->dumpPhoto($img,$newdir);
+	echo '</div>'
 ?>
 </body>
 </html>
