@@ -113,6 +113,12 @@ class Uploader{
 	        return false;
 	    }
      }
+     public function dumpPhoto($thumb,$dir){
+		$thumb = 'thumb_'.$thumb;
+		$img   = $dir.$thumb;
+		$dump  = "<img src=$img />";
+		return $dump;
+	}
 }	
 $upload = new Uploader();
 ?>
